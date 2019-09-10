@@ -2,7 +2,10 @@ package com.song.testcrackdeviceid;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.ishumei.smantifraud.SmAntiFraud;
 
@@ -12,11 +15,14 @@ import com.ishumei.smantifraud.SmAntiFraud;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private Button idBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        idBtn = ((Button) findViewById(R.id.show_id));
 
         // 获取数美设备指纹
         findViewById(R.id.smid).setOnClickListener(new View.OnClickListener() {
@@ -31,10 +37,19 @@ public class MainActivity extends AppCompatActivity {
                 SmAntiFraud.create(getApplicationContext(), option);
                 com.qiyi.xhook.XHook.getInstance().refresh(false);
 
-//                String deviceId = SmAntiFraud.getDeviceId();
-//
-//                Toast.makeText(getApplicationContext(), "smid: " + deviceId, Toast.LENGTH_SHORT).show();
-//                Log.e(TAG, "smid: " + deviceId);
+            }
+        });
+
+        idBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String deviceId = SmAntiFraud.getDeviceId();
+                com.qiyi.xhook.XHook.getInstance().refresh(false);
+
+                Toast.makeText(getApplicationContext(), "smid: " + deviceId, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "smid: " + deviceId);
+                idBtn.setText(deviceId);
             }
         });
 
