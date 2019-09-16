@@ -1,5 +1,6 @@
 package com.song.testcrackdeviceid;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.dingxiang.mobile.risk.DXRisk;
 import com.ishumei.smantifraud.SmAntiFraud;
 
 /**
@@ -16,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private Button idBtn;
+    private Button dxInitBtn;
+    private Button dxIdBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +27,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         idBtn = ((Button) findViewById(R.id.show_id));
+        dxInitBtn = ((Button) findViewById(R.id.dx_init));
+        dxIdBtn = ((Button) findViewById(R.id.dx_id));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String[] permissionArray = {
+                    "android.permission.ACCESS_COARSE_LOCATION",
+                    "android.permission.ACCESS_FINE_LOCATION",
+                    "android.permission.WRITE_EXTERNAL_STORAGE",
+                    "android.permission.READ_EXTERNAL_STORAGE",
+                    "android.permission.READ_PHONE_STATE",
+            };
+            this.requestPermissions(permissionArray, 1);
+        }
 
         // 获取数美设备指纹
         findViewById(R.id.smid).setOnClickListener(new View.OnClickListener() {
@@ -50,6 +67,32 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "smid: " + deviceId, Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "smid: " + deviceId);
                 idBtn.setText(deviceId);
+            }
+        });
+
+        dxInitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 开通服务后可在实时风险决策的二级菜单“应用管理”中获取
+                String appId = "7fb3923f30d03dc3f7020e1d134690d5";
+                DXRisk.setup(MainActivity.this, appId);
+                com.qiyi.xhook.XHook.getInstance().refresh(false);
+            }
+        });
+
+        dxIdBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 子线程中获取id
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        final String token = DXRisk.getToken();
+                        Log.e(TAG, "dxid: " + token);
+                        com.qiyi.xhook.XHook.getInstance().refresh(false);
+
+                    }
+                }).start();
             }
         });
 

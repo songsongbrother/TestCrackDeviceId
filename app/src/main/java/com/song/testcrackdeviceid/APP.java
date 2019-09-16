@@ -17,5 +17,6 @@ public class APP extends Application {
 //
 //        // 注意!!获取 deviceId，这个接口在需要使用 deviceId 时地方调用。
 ////        String deviceId = SmAntiFraud.getDeviceId();
+
     }
 }
