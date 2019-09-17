@@ -88,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         final String token = DXRisk.getToken();
-                        Log.e(TAG, "dxid: " + token);
                         com.qiyi.xhook.XHook.getInstance().refresh(false);
+                        Log.e(TAG, "dxid: " + token);
 
                     }
                 }).start();
